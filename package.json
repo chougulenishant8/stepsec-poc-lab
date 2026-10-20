@@ -1,0 +1,14 @@
+{
+  "name": "stepsec-poc-lab",
+  "version": "1.0.0",
+  "description": "StepSecurity Harden-Runner lab: block-mode and overhead testing",
+  "private": true,
+  "scripts": {
+    "test": "node -e \"const a=require('axios'),l=require('lodash'),e=require('express'); if(typeof e!=='function'||typeof l.chunk!=='function'||!a.get){process.exit(1)} console.log('trivial test ok');\""
+  },
+  "dependencies": {
+    "express": "4.19.2",
+    "lodash": "4.17.21",
+    "axios": "1.7.7"
+  }
+}
