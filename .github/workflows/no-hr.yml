@@ -1,0 +1,23 @@
+name: No HR (control)
+on:
+  workflow_dispatch:
+
+# Identical to hr-audit.yml but WITHOUT the harden-runner step.
+# Used as the control for the overhead comparison.
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup Node 20
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '20'
+
+      - name: npm ci
+        run: npm ci
+
+      - name: npm test
+        run: npm test

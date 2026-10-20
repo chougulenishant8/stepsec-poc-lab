@@ -1,0 +1,44 @@
+name: HR Block
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Harden Runner (block)
+        uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+        with:
+          egress-policy: block
+          disable-sudo-and-containers: true
+          allowed-endpoints: >
+            github.com:443
+            api.github.com:443
+            codeload.github.com:443
+            objects.githubusercontent.com:443
+            registry.npmjs.org:443
+
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup Node 20
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '20'
+
+      - name: npm ci
+        run: npm ci
+
+      # The three steps below SHOULD be blocked by Harden-Runner block mode.
+      # continue-on-error so the job proceeds and all three blocks are observable.
+      - name: Blocked - curl httpbin (not in allowlist)
+        continue-on-error: true
+        run: curl --max-time 10 https://httpbin.org/get
+
+      - name: Blocked - curl 1.1.1.1 (not in allowlist)
+        continue-on-error: true
+        run: curl --max-time 10 https://1.1.1.1
+
+      - name: Blocked - sudo iptables -F (sudo disabled)
+        continue-on-error: true
+        run: sudo iptables -F
